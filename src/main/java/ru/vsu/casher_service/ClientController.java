@@ -22,40 +22,14 @@ public class ClientController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    private Methods methods = new Methods();
 
-    @GetMapping("/test1")
-    public String findAll2() {
-        int result = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM client", Integer.class);
-        return Integer.toString(result);
-    }
 
-    @GetMapping("/show")
-    public List getList() {
-        ArrayList clients = new ArrayList();
-        clients.add("Bla");
-        clients.add("Ara");
-        return clients;
-    }
-
-    @PostMapping("/pay")
-    public String pay(@RequestParam(value = "key") String key) {
-        return key + "Just a string";
-    }
-
-    @GetMapping
-    public List<Client> getClient() {
-        return jdbcTemplate.query("SELECT * FROM client", new BeanPropertyRowMapper<>(Client.class));
-    }
-
-    @GetMapping("/{id}")
-    public Client getOneClient(@PathVariable String id){
-        return jdbcTemplate.queryForObject("SELECT * FROM client WHERE id = ? ", new Object[]{id}, new int[]{Types.VARCHAR}, new BeanPropertyRowMapper<>(Client.class));
-    }
 
     @GetMapping("/card/{cardnumber}")
     public Client getOneClientByCardNumber(@PathVariable BigInteger cardnumber){
-        return jdbcTemplate.queryForObject("SELECT cl.* FROM card ca, client cl\n" +
-                "WHERE ca.cardnumber = ?\n" +
-                "  AND cl.id = ca.clientid  ", new Object[]{cardnumber}, new int[]{Types.BIGINT}, new BeanPropertyRowMapper<>(Client.class));
+        return methods.getOneClientByCardNumber(cardnumber, jdbcTemplate);
     }
+
+
 }
